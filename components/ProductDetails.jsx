@@ -44,12 +44,12 @@ const ProductDetails = ({ product }) => {
             </div>
             <div className="flex-1">
                 <h1 className="text-3xl font-semibold text-slate-800">{product.name}</h1>
-                <div className='flex items-center mt-2'>
+                {product.rating.length > 0 && <div className='flex items-center mt-2'>
                     {Array(5).fill('').map((_, index) => (
                         <StarIcon key={index} size={14} className='text-transparent mt-0.5' fill={averageRating >= index + 1 ? "#00C950" : "#D1D5DB"} />
                     ))}
                     <p className="text-sm ml-3 text-slate-500">{product.rating.length} Reviews</p>
-                </div>
+                </div>}
                 <div className="flex items-start my-6 gap-3 text-2xl font-semibold text-slate-800">
                     <p>{currency} {product.price.toLocaleString()}</p>
                 </div>
@@ -78,8 +78,8 @@ const ProductDetails = ({ product }) => {
                 </div>
                 <hr className="border-gray-300 my-5" />
                 <div className="flex flex-col gap-4 text-slate-500">
-                    <p className="flex gap-3"> <EarthIcon className="text-slate-400" /> Free shipping worldwide </p>
-                    <p className="flex gap-3"> <CreditCardIcon className="text-slate-400" /> 100% Secured Payment </p>
+                    <p className="flex gap-3"> <EarthIcon className="text-slate-400" /> Delivery availability confirmed during ordering </p>
+                    <p className="flex gap-3"> <CreditCardIcon className="text-slate-400" /> Available payment methods shown at checkout </p>
                     <p className="flex gap-3"> <ShieldCheckIcon className="text-slate-400" /> {product.warrantyMonths}-month product warranty </p>
                 </div>
 

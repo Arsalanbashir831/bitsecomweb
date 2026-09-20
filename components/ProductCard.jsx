@@ -22,11 +22,9 @@ const ProductCard = ({ product }) => {
                 <div>
                     <p>{product.name}</p>
                     <p className="text-xs text-slate-500 mt-1">{product.brand} · {product.storageSize} · {product.category}</p>
-                    <div className='flex'>
-                        {Array(5).fill('').map((_, index) => (
-                            <StarIcon key={index} size={14} className='text-transparent mt-0.5' fill={rating >= index + 1 ? "#00C950" : "#D1D5DB"} />
-                        ))}
-                    </div>
+                    {product.rating.length > 0 && <div className='flex' aria-label={`${rating} out of 5 stars from ${product.rating.length} reviews`}>
+                        {Array(5).fill('').map((_, index) => <StarIcon key={index} size={14} className='text-transparent mt-0.5' fill={rating >= index + 1 ? "#00C950" : "#D1D5DB"} />)}
+                    </div>}
                 </div>
                 <p className="font-medium whitespace-nowrap">{currency} {product.price.toLocaleString()}</p>
             </div>

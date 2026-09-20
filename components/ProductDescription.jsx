@@ -13,7 +13,7 @@ const ProductDescription = ({ product }) => {
 
             {/* Tabs */}
             <div className="flex border-b border-slate-200 mb-6 max-w-2xl">
-                {['Description', 'Reviews'].map((tab, index) => (
+                {['Description', ...(product.rating.length > 0 ? ['Reviews'] : [])].map((tab, index) => (
                     <button className={`${tab === selectedTab ? 'border-b-[1.5px] font-semibold' : 'text-slate-400'} px-3 py-2 font-medium`} key={index} onClick={() => setSelectedTab(tab)}>
                         {tab}
                     </button>

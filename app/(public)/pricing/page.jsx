@@ -1,9 +1,6 @@
 
-export default function PricingPage() {
-    return (
-        <div className='mx-auto max-w-[700px] my-28'>
-            {/* Pricing Table */}
+import { permanentRedirect } from "next/navigation"
 
-        </div>
-    )
+export default function PricingPage() {
+    permanentRedirect("https://diskanalysis.com.pk")
 }

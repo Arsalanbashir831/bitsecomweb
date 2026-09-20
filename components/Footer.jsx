@@ -17,8 +17,9 @@ const Footer = () => {
             title: "QUICK LINKS",
             links: [
                 { text: "Home", path: '/', icon: null },
-                { text: "Store", path: '/store', icon: null },
-                { text: "Data Recovery Service", path: 'https://diskanalyst.com.pk', icon: null },
+                { text: "Shop", path: '/shop', icon: null },
+                { text: "Storage Guide", path: '/storage-guide', icon: null },
+                { text: "Data Recovery Service", path: 'https://diskanalysis.com.pk', external: true, icon: null },
 
             ]
         },
@@ -35,9 +36,6 @@ const Footer = () => {
 
     const socialIcons = [
         { icon: FacebookIcon, link: "https://www.facebook.com/bitspakistan/" },
-        { icon: InstagramIcon, link: "https://www.instagram.com" },
-        { icon: TwitterIcon, link: "https://twitter.com" },
-        { icon: LinkedinIcon, link: "https://www.linkedin.com" },
     ]
 
     return (
@@ -48,7 +46,7 @@ const Footer = () => {
                         <Link href="/" className="inline-flex items-center">
                             <Image src={bitsLogo} alt="BITS Pakistan" className="h-10 w-auto object-contain" width={160} height={40} />
                         </Link>
-                        <p className="max-w-[410px] mt-6 text-sm">BITS Pakistan — the biggest wholesaler of HDDs in Pakistan. Genuine hard drives, enterprise storage and IT hardware at wholesale prices, backed by warranty and expert support.</p>
+                        <p className="max-w-[410px] mt-6 text-sm leading-6">B.I.T.S Pakistan supplies HDD and SSD storage for computers, CCTV recorders, DVRs, and NVRs. Product pages show the available brand, capacity, warranty, price, and stock status.</p>
                         <div className="flex items-center gap-3 mt-5">
                             {socialIcons.map((item, i) => (
                                 <Link href={item.link} key={i} className="flex items-center justify-center w-10 h-10 bg-slate-100 hover:scale-105 hover:border border-slate-300 transition rounded-full">
@@ -66,7 +64,9 @@ const Footer = () => {
                                         <li key={i} className="flex items-center gap-2">
                                             {link.icon && <link.icon />}
                                             {link.path
-                                                ? <Link href={link.path} className="hover:underline transition">{link.text}</Link>
+                                                ? link.external
+                                                    ? <a href={link.path} target="_blank" rel="noopener noreferrer" className="hover:underline transition">{link.text}</a>
+                                                    : <Link href={link.path} className="hover:underline transition">{link.text}</Link>
                                                 : <span>{link.text}</span>}
                                         </li>
                                     ))}
@@ -76,7 +76,7 @@ const Footer = () => {
                     </div>
                 </div>
                 <p className="py-4 text-sm text-slate-500">
-                    Copyright 2025 © BITS Pakistan All Right Reserved.
+                    © 2026 B.I.T.S Pakistan. All rights reserved.
                 </p>
             </div>
         </footer>
