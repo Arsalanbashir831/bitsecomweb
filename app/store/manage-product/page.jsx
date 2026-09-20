@@ -3,7 +3,6 @@ import { useEffect, useState } from "react"
 import { toast } from "react-hot-toast"
 import Image from "next/image"
 import Loading from "@/components/Loading"
-import { productDummyData } from "@/assets/assets"
 
 export default function StoreManageProducts() {
 
@@ -13,8 +12,15 @@ export default function StoreManageProducts() {
     const [products, setProducts] = useState([])
 
     const fetchProducts = async () => {
-        setProducts(productDummyData)
-        setLoading(false)
+        try {
+            const res = await fetch('/api/products')
+            const data = await res.json()
+            setProducts(data.products || [])
+        } catch (error) {
+            toast.error('Failed to fetch products')
+        } finally {
+            setLoading(false)
+        }
     }
 
     const toggleStock = async (productId) => {

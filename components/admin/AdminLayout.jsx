@@ -8,25 +8,26 @@ import AdminSidebar from "./AdminSidebar"
 
 const AdminLayout = ({ children }) => {
 
-    const [isAdmin, setIsAdmin] = useState(false)
+    const [session, setSession] = useState(null)
     const [loading, setLoading] = useState(true)
 
-    const fetchIsAdmin = async () => {
-        setIsAdmin(true)
-        setLoading(false)
-    }
-
     useEffect(() => {
-        fetchIsAdmin()
+        fetch('/api/admin/session')
+            .then((res) => (res.ok ? res.json() : null))
+            .then((data) => {
+                setSession(data)
+                setLoading(false)
+            })
+            .catch(() => setLoading(false))
     }, [])
 
     return loading ? (
         <Loading />
-    ) : isAdmin ? (
+    ) : session?.authenticated ? (
         <div className="flex flex-col h-screen">
-            <AdminNavbar />
+            <AdminNavbar username={session.username} />
             <div className="flex flex-1 items-start h-full overflow-y-scroll no-scrollbar">
-                <AdminSidebar />
+                <AdminSidebar username={session.username} />
                 <div className="flex-1 h-full p-5 lg:pl-12 lg:pt-12 overflow-y-scroll">
                     {children}
                 </div>
@@ -35,8 +36,8 @@ const AdminLayout = ({ children }) => {
     ) : (
         <div className="min-h-screen flex flex-col items-center justify-center text-center px-6">
             <h1 className="text-2xl sm:text-4xl font-semibold text-slate-400">You are not authorized to access this page</h1>
-            <Link href="/" className="bg-slate-700 text-white flex items-center gap-2 mt-8 p-2 px-6 max-sm:text-sm rounded-full">
-                Go to home <ArrowRightIcon size={18} />
+            <Link href="/admin/login" className="bg-slate-700 text-white flex items-center gap-2 mt-8 p-2 px-6 max-sm:text-sm rounded-full">
+                Admin login <ArrowRightIcon size={18} />
             </Link>
         </div>
     )
