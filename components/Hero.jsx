@@ -4,9 +4,10 @@ import { ArrowRightIcon, ChevronRightIcon } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 import CategoriesMarquee from './CategoriesMarquee'
-import Link from 'next/link'
 
 const Hero = () => {
+
+    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$'
 
     return (
         <div className='mx-6'>
@@ -19,21 +20,22 @@ const Hero = () => {
                         <h2 className='text-3xl sm:text-5xl leading-[1.2] my-3 font-medium bg-gradient-to-r from-slate-600 to-[#A0FF74] bg-clip-text text-transparent max-w-xs  sm:max-w-md'>
                             Reliable HDDs and SSDs for CCTV surveillance, CCTV DVRs, and NVRs.
                         </h2>
-                        <Link href='/shop' className='inline-flex bg-slate-800 text-white text-sm py-2.5 px-7 sm:py-5 sm:px-12 mt-4 sm:mt-10 rounded-md hover:bg-slate-900 hover:scale-103 active:scale-95 transition'>Visit shop</Link>
+                        <button className='bg-slate-800 text-white text-sm py-2.5 px-7 sm:py-5 sm:px-12 mt-4 sm:mt-10 rounded-md hover:bg-slate-900 hover:scale-103 active:scale-95 transition'>Visit Store</button>
                     </div>
-                    <Image className='sm:absolute bottom-0 right-0 md:right-10 w-full sm:max-w-sm' src={assets.hero_model_img} alt="HDD and SSD storage available from B.I.T.S Pakistan" priority />
+                    <Image className='sm:absolute bottom-0 right-0 md:right-10 w-full sm:max-w-sm' src={assets.hero_model_img} alt="" />
                 </div>
                 <div className='flex flex-col md:flex-row xl:flex-col gap-5 w-full xl:max-w-sm text-sm text-slate-600'>
-                    <div className='flex-1 flex items-center w-full bg-orange-200 rounded-3xl p-8 sm:p-10 group'>
-                        <div className='w-full'>
-                            <p className='text-4xl sm:text-5xl xl:text-4xl leading-[1.08] font-medium bg-gradient-to-r from-slate-800 to-[#FFAD51] bg-clip-text text-transparent'>Selling all over Pakistan</p>
-                            <Link href='/shop' className='flex items-center gap-1 mt-6'>View products <ArrowRightIcon className='group-hover:ml-2 transition-all' size={18} /> </Link>
+                    <div className='flex-1 flex items-center justify-between w-full bg-orange-200 rounded-3xl p-6 px-8 group'>
+                        <div>
+                            <p className='text-3xl font-medium bg-gradient-to-r from-slate-800 to-[#FFAD51] bg-clip-text text-transparent max-w-40'>Selling All Over in Pakistan</p>
+                            <p className='flex items-center gap-1 mt-4'>View more <ArrowRightIcon className='group-hover:ml-2 transition-all' size={18} /> </p>
                         </div>
+                     
                     </div>
                     <div className='flex-1 flex items-center justify-between w-full bg-blue-200 rounded-3xl p-6 px-8 group'>
                         <div>
                             <p className='text-3xl font-medium bg-gradient-to-r from-slate-800 to-[#78B2FF] bg-clip-text text-transparent max-w-40'>Wholesale Price</p>
-                            <Link href='/shop' className='flex items-center gap-1 mt-4'>View products <ArrowRightIcon className='group-hover:ml-2 transition-all' size={18} /> </Link>
+                            <p className='flex items-center gap-1 mt-4'>View more <ArrowRightIcon className='group-hover:ml-2 transition-all' size={18} /> </p>
                         </div>
                         <Image className='w-35' src={assets.hero_product_img2} alt="" />
                     </div>
