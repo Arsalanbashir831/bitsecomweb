@@ -2,7 +2,9 @@ import path from 'node:path'
 import dotenv from 'dotenv'
 import { defineConfig } from 'prisma/config'
 
-dotenv.config({ path: ['.env.local', '.env'] })
+if (!process.env.DATABASE_URL) {
+    dotenv.config({ path: ['.env.local', '.env'] })
+}
 
 export default defineConfig({
     schema: path.join('prisma', 'schema.prisma'),

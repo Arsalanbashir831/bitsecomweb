@@ -72,14 +72,22 @@ const ProductDetails = ({ product }) => {
                             </div>
                         )
                     }
-                    <button onClick={() => !cart[productId] ? addToCartHandler() : router.push('/cart')} className="bg-slate-800 text-white px-10 py-3 text-sm font-medium rounded hover:bg-slate-900 active:scale-95 transition">
-                        {!cart[productId] ? 'Add to Cart' : 'View Cart'}
-                    </button>
+                   <button
+  onClick={() =>
+    window.open(
+      "https://wa.me/923349922317?text=Hi%2C%20I%20want%20to%20place%20an%20order.",
+      "_blank"
+    )
+  }
+  className="bg-green-400 text-white px-10 py-3 text-sm font-medium rounded hover:bg-slate-900 active:scale-95 transition"
+>
+  Contact WhatsApp for Order
+</button>
                 </div>
                 <hr className="border-gray-300 my-5" />
                 <div className="flex flex-col gap-4 text-slate-500">
-                    <p className="flex gap-3"> <EarthIcon className="text-slate-400" /> Delivery availability confirmed during ordering </p>
-                    <p className="flex gap-3"> <CreditCardIcon className="text-slate-400" /> Available payment methods shown at checkout </p>
+                    <p className="flex gap-3"> <EarthIcon className="text-slate-400" /> Advance Payment on Online Delivery </p>
+                    <p className="flex gap-3"> <CreditCardIcon className="text-slate-400" /> Available payment methods i.e Cash and Online Bank Transfer </p>
                     <p className="flex gap-3"> <ShieldCheckIcon className="text-slate-400" /> {product.warrantyMonths}-month product warranty </p>
                 </div>
 
