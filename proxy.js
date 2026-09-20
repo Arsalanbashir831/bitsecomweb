@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { jwtVerify } from "jose"
 import { ADMIN_COOKIE } from "@/lib/admin-cookie"
 
-export async function middleware(request) {
+export async function proxy(request) {
     const { pathname } = request.nextUrl
     const token = request.cookies.get(ADMIN_COOKIE)?.value
 

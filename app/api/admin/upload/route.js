@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { mkdir, writeFile } from "fs/promises"
 import path from "path"
 import { randomUUID } from "crypto"
+import { put } from "@vercel/blob"
 import { MAX_UPLOAD_BYTES, UPLOAD_DIR, UPLOAD_EXTENSIONS } from "@/lib/uploads"
 
 export async function POST(request) {
@@ -21,9 +22,14 @@ export async function POST(request) {
             return NextResponse.json({ error: `${file.name} is larger than 8MB` }, { status: 413 })
         }
         const name = `${Date.now()}-${randomUUID()}${extension}`
-        await mkdir(UPLOAD_DIR, { recursive: true })
-        await writeFile(path.join(UPLOAD_DIR, name), Buffer.from(await file.arrayBuffer()))
-        urls.push(`/uploads/${name}`)
+        if (process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID) {
+            const blob = await put(`products/${name}`, file, { access: "public", addRandomSuffix: false })
+            urls.push(blob.url)
+        } else {
+            await mkdir(UPLOAD_DIR, { recursive: true })
+            await writeFile(path.join(UPLOAD_DIR, name), Buffer.from(await file.arrayBuffer()))
+            urls.push(`/uploads/${name}`)
+        }
     }
 
     return NextResponse.json({ urls })

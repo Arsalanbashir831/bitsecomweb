@@ -9,13 +9,6 @@ import product_img2 from "./product_img2.png"
 import product_img3 from "./product_img3.png"
 import product_img4 from "./product_img4.png"
 import product_img5 from "./product_img5.png"
-import product_img6 from "./product_img6.png"
-import product_img7 from "./product_img7.png"
-import product_img8 from "./product_img8.png"
-import product_img9 from "./product_img9.png"
-import product_img10 from "./product_img10.png"
-import product_img11 from "./product_img11.png"
-import product_img12 from "./product_img12.png"
 import { HeadsetIcon, HeartPulseIcon, ShieldCheckIcon } from "lucide-react";
 import profile_pic1 from "./profile_pic1.jpg"
 import profile_pic2 from "./profile_pic2.jpg"
@@ -24,11 +17,10 @@ import profile_pic3 from "./profile_pic3.jpg"
 export const assets = {
     upload_area, hero_model_img,
     hero_product_img1, hero_product_img2, gs_logo,
-    product_img1, product_img2, product_img3, product_img4, product_img5, product_img6,
-    product_img7, product_img8, product_img9, product_img10, product_img11, product_img12,
+    product_img1, product_img2, product_img3, product_img4, product_img5,
 }
 
-export const categories = ["Headphones", "Speakers", "Watch", "Earbuds", "Mouse", "Decoration"];
+export const categories = ["HDD", "SSD", "Seagate", "WD", "HGST", "160 GB–14 TB"];
 
 export const dummyRatingsData = [
     { id: "rat_1", rating: 4.2, review: "I was a bit skeptical at first, but this product turned out to be even better than I imagined. The quality feels premium, it's easy to use, and it delivers exactly what was promised. I've already recommended it to friends and will definitely purchase again in the future.", user: { name: 'Kristin Watson', image: profile_pic1 }, productId: "prod_1", createdAt: 'Sat Jul 19 2025 14:51:25 GMT+0530 (India Standard Time)', updatedAt: 'Sat Jul 19 2025 14:51:25 GMT+0530 (India Standard Time)', product: { name: 'Bluetooth Speakers', category:'Electronics', id:'prod_1'} },

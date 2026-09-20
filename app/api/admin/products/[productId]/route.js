@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { deleteUpload } from "@/lib/uploads"
+import { isProductBrand, isProductCategory, isStorageSize } from "@/lib/product-options"
 
 export async function GET(_request, { params }) {
     const { productId } = await params
@@ -20,21 +21,27 @@ export async function PATCH(request, { params }) {
     if (body.name !== undefined) data.name = String(body.name)
     if (body.description !== undefined) data.description = String(body.description)
     if (body.category !== undefined) data.category = String(body.category)
+    if (body.brand !== undefined) data.brand = String(body.brand)
+    if (body.storageSize !== undefined) data.storageSize = String(body.storageSize)
+    if (body.warrantyMonths !== undefined) data.warrantyMonths = Number(body.warrantyMonths)
     if (body.inStock !== undefined) data.inStock = Boolean(body.inStock)
-    if (body.mrp !== undefined) data.mrp = Number(body.mrp)
     if (body.price !== undefined) data.price = Number(body.price)
     if (body.images !== undefined) data.images = body.images
-    if (body.storeId !== undefined) data.storeId = String(body.storeId)
 
-    if (data.mrp !== undefined && !Number.isFinite(data.mrp)) {
-        return NextResponse.json({ error: "MRP must be a number" }, { status: 400 })
+    if (data.category !== undefined && !isProductCategory(data.category)) {
+        return NextResponse.json({ error: "Category must be HDD or SSD" }, { status: 400 })
     }
-    if (data.price !== undefined && !Number.isFinite(data.price)) {
-        return NextResponse.json({ error: "Price must be a number" }, { status: 400 })
+    if (data.brand !== undefined && !isProductBrand(data.brand)) {
+        return NextResponse.json({ error: "Select a valid brand" }, { status: 400 })
     }
-    if (data.storeId) {
-        const store = await prisma.store.findUnique({ where: { id: data.storeId } })
-        if (!store) return NextResponse.json({ error: "Store not found" }, { status: 400 })
+    if (data.storageSize !== undefined && !isStorageSize(data.storageSize)) {
+        return NextResponse.json({ error: "Select a valid storage size" }, { status: 400 })
+    }
+    if (data.warrantyMonths !== undefined && (!Number.isInteger(data.warrantyMonths) || data.warrantyMonths < 0 || data.warrantyMonths > 120)) {
+        return NextResponse.json({ error: "Warranty must be between 0 and 120 months" }, { status: 400 })
+    }
+    if (data.price !== undefined && (!Number.isFinite(data.price) || data.price < 0)) {
+        return NextResponse.json({ error: "Retailer price must be a valid number" }, { status: 400 })
     }
 
     try {

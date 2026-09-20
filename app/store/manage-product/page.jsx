@@ -43,7 +43,7 @@ export default function StoreManageProducts() {
                     <tr>
                         <th className="px-4 py-3">Name</th>
                         <th className="px-4 py-3 hidden md:table-cell">Description</th>
-                        <th className="px-4 py-3 hidden md:table-cell">MRP</th>
+                        <th className="px-4 py-3 hidden md:table-cell">Drive</th>
                         <th className="px-4 py-3">Price</th>
                         <th className="px-4 py-3">Actions</th>
                     </tr>
@@ -58,7 +58,7 @@ export default function StoreManageProducts() {
                                 </div>
                             </td>
                             <td className="px-4 py-3 max-w-md text-slate-600 hidden md:table-cell truncate">{product.description}</td>
-                            <td className="px-4 py-3 hidden md:table-cell">{currency} {product.mrp.toLocaleString()}</td>
+                            <td className="px-4 py-3 hidden md:table-cell">{product.brand} · {product.storageSize} · {product.category}</td>
                             <td className="px-4 py-3">{currency} {product.price.toLocaleString()}</td>
                             <td className="px-4 py-3 text-center">
                                 <label className="relative inline-flex items-center cursor-pointer text-gray-900 gap-3">

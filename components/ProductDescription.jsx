@@ -22,7 +22,16 @@ const ProductDescription = ({ product }) => {
 
             {/* Description */}
             {selectedTab === "Description" && (
-                <p className="max-w-xl">{product.description}</p>
+                <div className="max-w-2xl">
+                    <p className="leading-relaxed">{product.description}</p>
+                    <h2 className="mt-8 text-lg font-semibold text-slate-800">Product specifications</h2>
+                    <dl className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="flex justify-between border-b border-slate-200 py-2"><dt>Category</dt><dd className="font-medium text-slate-800">{product.category}</dd></div>
+                        <div className="flex justify-between border-b border-slate-200 py-2"><dt>Brand</dt><dd className="font-medium text-slate-800">{product.brand}</dd></div>
+                        <div className="flex justify-between border-b border-slate-200 py-2"><dt>Capacity</dt><dd className="font-medium text-slate-800">{product.storageSize}</dd></div>
+                        <div className="flex justify-between border-b border-slate-200 py-2"><dt>Warranty</dt><dd className="font-medium text-slate-800">{product.warrantyMonths} months</dd></div>
+                    </dl>
+                </div>
             )}
 
             {/* Reviews */}
@@ -47,13 +56,13 @@ const ProductDescription = ({ product }) => {
             )}
 
             {/* Store Page */}
-            <div className="flex gap-3 mt-14">
-                <Image src={product.store.logo} alt="" className="size-11 rounded-full ring ring-slate-400" width={100} height={100} />
+            {product.store && <div className="flex gap-3 mt-14">
+                <Image src={product.store.logo} alt={`${product.store.name} logo`} className="size-11 rounded-full ring ring-slate-400" width={100} height={100} />
                 <div>
                     <p className="font-medium text-slate-600">Product by {product.store.name}</p>
-                    <Link href={`/shop/${product.store.username}`} className="flex items-center gap-1.5 text-green-500"> view store <ArrowRight size={14} /></Link>
+                    <Link href={`/shop/${product.store.username}`} className="flex items-center gap-1.5 text-green-600">View store <ArrowRight size={14} /></Link>
                 </div>
-            </div>
+            </div>}
         </div>
     )
 }

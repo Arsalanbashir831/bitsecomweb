@@ -22,22 +22,24 @@ model User {
     buyerOrders Order[]   @relation("BuyerRelation")
 }
 
-// Required for creating a Product: name, description, mrp, price, images, category, storeId
+// HDD and SSD inventory managed from the admin panel.
 model Product {
-    id          String   @id @default(cuid())
-    name        String
-    description String
-    mrp         Float
-    price       Float
-    images      String[]
-    category    String
-    inStock     Boolean  @default(true)
-    storeId     String
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+    id             String   @id @default(cuid())
+    name           String
+    description    String
+    price          Float
+    images         String[]
+    category       String
+    brand          String   @default("Mixed")
+    storageSize    String   @default("1 TB")
+    warrantyMonths Int      @default(12)
+    inStock        Boolean  @default(true)
+    storeId        String?
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
 
     // Relations
-    store      Store       @relation(fields: [storeId], references: [id], onDelete: Cascade)
+    store      Store?      @relation(fields: [storeId], references: [id], onDelete: SetNull)
     orderItems OrderItem[]
     rating     Rating[]
 }

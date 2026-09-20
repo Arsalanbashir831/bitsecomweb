@@ -7,8 +7,12 @@ import "./globals.css";
 const outfit = Outfit({ subsets: ["latin"], weight: ["400", "500", "600"] });
 
 export const metadata = {
-    title: "GoCart. - Shop smarter",
-    description: "GoCart. - Shop smarter",
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://gocart-omega-nine.vercel.app"),
+    title: {
+        default: "B.I.T.S Pakistan | HDD and SSD Storage",
+        template: "%s | B.I.T.S Pakistan",
+    },
+    description: "Shop HDD and SSD storage drives from Seagate, WD, HGST, and mixed brands in Pakistan.",
 };
 
 export default function RootLayout({ children }) {

@@ -1,7 +1,7 @@
 'use client'
 
 import { addToCart } from "@/lib/features/cart/cartSlice";
-import { StarIcon, TagIcon, EarthIcon, CreditCardIcon, UserIcon } from "lucide-react";
+import { StarIcon, DatabaseIcon, EarthIcon, CreditCardIcon, ShieldCheckIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
@@ -24,7 +24,9 @@ const ProductDetails = ({ product }) => {
         dispatch(addToCart({ productId }))
     }
 
-    const averageRating = product.rating.reduce((acc, item) => acc + item.rating, 0) / product.rating.length;
+    const averageRating = product.rating.length
+        ? product.rating.reduce((acc, item) => acc + item.rating, 0) / product.rating.length
+        : 0;
     
     return (
         <div className="flex max-lg:flex-col gap-12">
@@ -32,12 +34,12 @@ const ProductDetails = ({ product }) => {
                 <div className="flex sm:flex-col gap-3">
                     {product.images.map((image, index) => (
                         <div key={index} onClick={() => setMainImage(product.images[index])} className="bg-slate-100 flex items-center justify-center size-26 rounded-lg group cursor-pointer">
-                            <Image src={image} className="group-hover:scale-103 group-active:scale-95 transition" alt="" width={45} height={45} />
+                            <Image src={image} className="group-hover:scale-103 group-active:scale-95 transition" alt={`${product.brand} ${product.storageSize} ${product.category} view ${index + 1}`} width={90} height={90} />
                         </div>
                     ))}
                 </div>
                 <div className="flex justify-center items-center h-100 sm:size-113 bg-slate-100 rounded-lg ">
-                    <Image src={mainImage} alt="" width={250} height={250} />
+                    <Image src={mainImage} alt={`${product.name} — ${product.brand} ${product.storageSize} ${product.category}`} width={500} height={500} className="max-h-80 w-auto object-contain" priority />
                 </div>
             </div>
             <div className="flex-1">
@@ -49,12 +51,17 @@ const ProductDetails = ({ product }) => {
                     <p className="text-sm ml-3 text-slate-500">{product.rating.length} Reviews</p>
                 </div>
                 <div className="flex items-start my-6 gap-3 text-2xl font-semibold text-slate-800">
-                    <p> {currency}{product.price} </p>
-                    <p className="text-xl text-slate-500 line-through">{currency}{product.mrp}</p>
+                    <p>{currency} {product.price.toLocaleString()}</p>
                 </div>
-                <div className="flex items-center gap-2 text-slate-500">
-                    <TagIcon size={14} />
-                    <p>Save {((product.mrp - product.price) / product.mrp * 100).toFixed(0)}% right now</p>
+                <dl className="grid grid-cols-2 gap-x-8 gap-y-4 rounded-xl border border-slate-200 bg-slate-50 p-5 text-sm max-w-xl">
+                    <div><dt className="text-slate-400">Brand</dt><dd className="mt-1 font-medium text-slate-800">{product.brand}</dd></div>
+                    <div><dt className="text-slate-400">Drive type</dt><dd className="mt-1 font-medium text-slate-800">{product.category}</dd></div>
+                    <div><dt className="text-slate-400">Storage capacity</dt><dd className="mt-1 font-medium text-slate-800">{product.storageSize}</dd></div>
+                    <div><dt className="text-slate-400">Warranty</dt><dd className="mt-1 font-medium text-slate-800">{product.warrantyMonths} months</dd></div>
+                </dl>
+                <div className="flex items-center gap-2 text-slate-500 mt-5">
+                    <DatabaseIcon size={16} />
+                    <p>{product.inStock ? 'Available for ordering' : 'Currently out of stock'}</p>
                 </div>
                 <div className="flex items-end gap-5 mt-10">
                     {
@@ -73,7 +80,7 @@ const ProductDetails = ({ product }) => {
                 <div className="flex flex-col gap-4 text-slate-500">
                     <p className="flex gap-3"> <EarthIcon className="text-slate-400" /> Free shipping worldwide </p>
                     <p className="flex gap-3"> <CreditCardIcon className="text-slate-400" /> 100% Secured Payment </p>
-                    <p className="flex gap-3"> <UserIcon className="text-slate-400" /> Trusted by top brands </p>
+                    <p className="flex gap-3"> <ShieldCheckIcon className="text-slate-400" /> {product.warrantyMonths}-month product warranty </p>
                 </div>
 
             </div>

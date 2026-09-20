@@ -3,18 +3,19 @@ import { assets } from "@/assets/assets"
 import Image from "next/image"
 import { useState } from "react"
 import { toast } from "react-hot-toast"
+import { PRODUCT_BRANDS, PRODUCT_CATEGORIES, STORAGE_SIZES } from "@/lib/product-options"
 
 export default function StoreAddProduct() {
-
-    const categories = ['Electronics', 'Clothing', 'Home & Kitchen', 'Beauty & Health', 'Toys & Games', 'Sports & Outdoors', 'Books & Media', 'Food & Drink', 'Hobbies & Crafts', 'Others']
 
     const [images, setImages] = useState({ 1: null, 2: null, 3: null, 4: null })
     const [productInfo, setProductInfo] = useState({
         name: "",
         description: "",
-        mrp: 0,
         price: 0,
-        category: "",
+        category: "HDD",
+        brand: "Seagate",
+        storageSize: "1 TB",
+        warrantyMonths: 12,
     })
     const [loading, setLoading] = useState(false)
 
@@ -56,20 +57,27 @@ export default function StoreAddProduct() {
 
             <div className="flex gap-5">
                 <label htmlFor="" className="flex flex-col gap-2 ">
-                    Actual Price ($)
-                    <input type="number" name="mrp" onChange={onChangeHandler} value={productInfo.mrp} placeholder="0" rows={5} className="w-full max-w-45 p-2 px-4 outline-none border border-slate-200 rounded resize-none" required />
-                </label>
-                <label htmlFor="" className="flex flex-col gap-2 ">
-                    Offer Price ($)
+                    Retailer price (PKR)
                     <input type="number" name="price" onChange={onChangeHandler} value={productInfo.price} placeholder="0" rows={5} className="w-full max-w-45 p-2 px-4 outline-none border border-slate-200 rounded resize-none" required />
+                </label>
+                <label className="flex flex-col gap-2">
+                    Warranty in months
+                    <input type="number" min="0" max="120" name="warrantyMonths" onChange={onChangeHandler} value={productInfo.warrantyMonths} className="w-full max-w-45 p-2 px-4 outline-none border border-slate-200 rounded" required />
                 </label>
             </div>
 
             <select onChange={e => setProductInfo({ ...productInfo, category: e.target.value })} value={productInfo.category} className="w-full max-w-sm p-2 px-4 my-6 outline-none border border-slate-200 rounded" required>
-                <option value="">Select a category</option>
-                {categories.map((category) => (
+                {PRODUCT_CATEGORIES.map((category) => (
                     <option key={category} value={category}>{category}</option>
                 ))}
+            </select>
+
+            <select name="brand" onChange={onChangeHandler} value={productInfo.brand} className="w-full max-w-sm p-2 px-4 mb-6 outline-none border border-slate-200 rounded" required>
+                {PRODUCT_BRANDS.map((brand) => <option key={brand} value={brand}>{brand}</option>)}
+            </select>
+
+            <select name="storageSize" onChange={onChangeHandler} value={productInfo.storageSize} className="w-full max-w-sm p-2 px-4 mb-6 outline-none border border-slate-200 rounded" required>
+                {STORAGE_SIZES.map((size) => <option key={size} value={size}>{size}</option>)}
             </select>
 
             <br />

@@ -1,7 +1,7 @@
 'use client'
 
-import { categories } from "@/assets/assets"
 import Loading from "@/components/Loading"
+import { PRODUCT_BRANDS, PRODUCT_CATEGORIES, STORAGE_SIZES } from "@/lib/product-options"
 import { LoaderCircleIcon, PencilIcon, PlusIcon, Trash2Icon, UploadIcon, XIcon } from "lucide-react"
 import Image from "next/image"
 import { useCallback, useEffect, useRef, useState } from "react"
@@ -10,11 +10,12 @@ import toast from "react-hot-toast"
 const emptyForm = {
     name: '',
     description: '',
-    category: '',
-    mrp: '',
+    category: 'HDD',
+    brand: 'Seagate',
+    storageSize: '1 TB',
+    warrantyMonths: '12',
     price: '',
     inStock: true,
-    storeId: '',
     images: [],
 }
 
@@ -23,7 +24,6 @@ export default function AdminProducts() {
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$'
 
     const [products, setProducts] = useState(null)
-    const [stores, setStores] = useState([])
     const [modalOpen, setModalOpen] = useState(false)
     const [editingId, setEditingId] = useState(null)
     const [form, setForm] = useState(emptyForm)
@@ -39,9 +39,6 @@ export default function AdminProducts() {
 
     useEffect(() => {
         fetchProducts()
-        fetch('/api/admin/stores')
-            .then((res) => res.json())
-            .then((data) => setStores(data.stores ?? []))
     }, [fetchProducts])
 
     const openAdd = () => {
@@ -55,10 +52,11 @@ export default function AdminProducts() {
             name: product.name,
             description: product.description,
             category: product.category,
-            mrp: String(product.mrp),
+            brand: product.brand,
+            storageSize: product.storageSize,
+            warrantyMonths: String(product.warrantyMonths),
             price: String(product.price),
             inStock: product.inStock,
-            storeId: product.storeId,
             images: [...product.images],
         })
         setEditingId(product.id)
@@ -90,7 +88,7 @@ export default function AdminProducts() {
         e.preventDefault()
         setSaving(true)
 
-        const payload = { ...form, mrp: Number(form.mrp), price: Number(form.price) }
+        const payload = { ...form, warrantyMonths: Number(form.warrantyMonths), price: Number(form.price) }
         const response = editingId
             ? await fetch(`/api/admin/products/${editingId}`, {
                 method: 'PATCH',
@@ -142,10 +140,9 @@ export default function AdminProducts() {
                         <thead>
                             <tr className="border-b border-slate-200 text-left text-slate-600">
                                 <th className="p-4 font-medium">Product</th>
-                                <th className="p-4 font-medium">Category</th>
+                                <th className="p-4 font-medium">Drive</th>
                                 <th className="p-4 font-medium">Price</th>
                                 <th className="p-4 font-medium">Stock</th>
-                                <th className="p-4 font-medium">Store</th>
                                 <th className="p-4 font-medium text-right">Actions</th>
                             </tr>
                         </thead>
@@ -154,24 +151,25 @@ export default function AdminProducts() {
                                 <tr key={product.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition">
                                     <td className="p-4">
                                         <div className="flex items-center gap-3">
-                                            <Image src={product.images[0]} alt="" width={80} height={80} className="size-12 rounded-lg object-cover bg-slate-100" />
+                                            <Image src={product.images[0]} alt={`${product.brand} ${product.storageSize} ${product.category}`} width={80} height={80} className="size-12 rounded-lg object-cover bg-slate-100" />
                                             <div>
                                                 <p className="text-slate-700 font-medium">{product.name}</p>
                                                 <p className="text-xs text-slate-400 line-clamp-1 max-w-60">{product.description}</p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="p-4">{product.category}</td>
                                     <td className="p-4">
-                                        <p className="text-slate-700">{currency}{product.price}</p>
-                                        <p className="text-xs text-slate-400 line-through">{currency}{product.mrp}</p>
+                                        <p className="text-slate-700">{product.brand} · {product.storageSize}</p>
+                                        <p className="text-xs text-slate-400">{product.category} · {product.warrantyMonths}-month warranty</p>
+                                    </td>
+                                    <td className="p-4">
+                                        <p className="text-slate-700">{currency} {product.price.toLocaleString()}</p>
                                     </td>
                                     <td className="p-4">
                                         <span className={`text-xs px-2.5 py-1 rounded-full ${product.inStock ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>
                                             {product.inStock ? 'In stock' : 'Out of stock'}
                                         </span>
                                     </td>
-                                    <td className="p-4">{product.store?.name || '—'}</td>
                                     <td className="p-4">
                                         <div className="flex items-center justify-end gap-2">
                                             <button onClick={() => openEdit(product)} className="p-2 rounded-full hover:bg-slate-200 transition" title="Edit">
@@ -225,49 +223,56 @@ export default function AdminProducts() {
 
                             <div className="flex flex-col gap-1.5">
                                 <label className="text-slate-600">Category</label>
-                                <input
-                                    type="text"
-                                    list="product-categories"
+                                <select
                                     value={form.category}
                                     onChange={(e) => setForm({ ...form, category: e.target.value })}
-                                    className="border border-slate-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-500 transition"
-                                    required
-                                />
-                                <datalist id="product-categories">
-                                    {categories.map((category) => <option key={category} value={category} />)}
-                                </datalist>
-                            </div>
-
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-slate-600">Store</label>
-                                <select
-                                    value={form.storeId}
-                                    onChange={(e) => setForm({ ...form, storeId: e.target.value })}
                                     className="border border-slate-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-500 transition bg-white"
                                     required
                                 >
-                                    <option value="">Select store</option>
-                                    {stores.map((store) => (
-                                        <option key={store.id} value={store.id}>{store.name} (@{store.username})</option>
-                                    ))}
+                                    {PRODUCT_CATEGORIES.map((category) => <option key={category} value={category}>{category}</option>)}
                                 </select>
                             </div>
 
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-slate-600">MRP ({currency})</label>
+                                <label className="text-slate-600">Brand</label>
+                                <select
+                                    value={form.brand}
+                                    onChange={(e) => setForm({ ...form, brand: e.target.value })}
+                                    className="border border-slate-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-500 transition bg-white"
+                                    required
+                                >
+                                    {PRODUCT_BRANDS.map((brand) => <option key={brand} value={brand}>{brand}</option>)}
+                                </select>
+                            </div>
+
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-slate-600">Storage size</label>
+                                <select
+                                    value={form.storageSize}
+                                    onChange={(e) => setForm({ ...form, storageSize: e.target.value })}
+                                    className="border border-slate-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-500 transition bg-white"
+                                    required
+                                >
+                                    {STORAGE_SIZES.map((size) => <option key={size} value={size}>{size}</option>)}
+                                </select>
+                            </div>
+
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-slate-600">Warranty in months</label>
                                 <input
                                     type="number"
                                     min="0"
-                                    step="0.01"
-                                    value={form.mrp}
-                                    onChange={(e) => setForm({ ...form, mrp: e.target.value })}
+                                    max="120"
+                                    step="1"
+                                    value={form.warrantyMonths}
+                                    onChange={(e) => setForm({ ...form, warrantyMonths: e.target.value })}
                                     className="border border-slate-300 rounded-lg px-4 py-2.5 outline-none focus:border-green-500 transition"
                                     required
                                 />
                             </div>
 
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-slate-600">Selling price ({currency})</label>
+                            <div className="flex flex-col gap-1.5 sm:col-span-2">
+                                <label className="text-slate-600">Retailer price ({currency})</label>
                                 <input
                                     type="number"
                                     min="0"
@@ -295,7 +300,7 @@ export default function AdminProducts() {
                             <div className="flex flex-wrap gap-3">
                                 {form.images.map((url) => (
                                     <div key={url} className="relative">
-                                        <Image src={url} alt="" width={160} height={160} className="size-20 rounded-lg object-cover bg-slate-100 border border-slate-200" />
+                                        <Image src={url} alt={`${form.name || 'Product'} gallery image`} width={160} height={160} className="size-20 rounded-lg object-cover bg-slate-100 border border-slate-200" />
                                         <button
                                             type="button"
                                             onClick={() => removeImage(url)}
@@ -320,22 +325,16 @@ export default function AdminProducts() {
                             {form.images.length === 0 && <p className="text-xs text-red-500">At least one image is required.</p>}
                         </div>
 
-                        {stores.length === 0 && (
-                            <p className="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2.5">
-                                No stores exist yet. A product must belong to a store — create or approve a store first.
-                            </p>
-                        )}
-
                         <div className="flex justify-end gap-3 pt-2">
                             <button type="button" onClick={() => setModalOpen(false)} className="text-sm text-slate-600 border border-slate-200 hover:border-slate-300 rounded-full px-6 py-2.5 transition">
                                 Cancel
                             </button>
                             <button
                                 type="submit"
-                                disabled={saving || uploading || form.images.length === 0 || stores.length === 0}
+                                disabled={saving || uploading || form.images.length === 0}
                                 className="text-sm text-white bg-green-600 hover:bg-green-700 disabled:opacity-60 rounded-full px-6 py-2.5 transition"
                             >
-                                {saving ? 'Saving...' : editingId ? 'Update Product' : 'Add Product'}
+                                {saving ? 'Saving…' : editingId ? 'Update Product' : 'Add Product'}
                             </button>
                         </div>
                     </form>

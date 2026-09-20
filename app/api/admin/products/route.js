@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { isProductBrand, isProductCategory, isStorageSize } from "@/lib/product-options"
 
 export async function GET() {
     const products = await prisma.product.findMany({
@@ -11,33 +12,41 @@ export async function GET() {
 
 export async function POST(request) {
     const body = await request.json().catch(() => ({}))
-    const { name, description, mrp, price, images, category, inStock, storeId } = body
+    const { name, description, price, images, category, brand, storageSize, warrantyMonths, inStock } = body
 
-    if (!name || !description || !category || !storeId) {
-        return NextResponse.json({ error: "Name, description, category and store are required" }, { status: 400 })
+    if (!name || !description || !isProductCategory(category) || !isProductBrand(brand) || !isStorageSize(storageSize)) {
+        return NextResponse.json({ error: "Enter valid product details" }, { status: 400 })
     }
-    const mrpValue = Number(mrp)
     const priceValue = Number(price)
-    if (!Number.isFinite(mrpValue) || !Number.isFinite(priceValue)) {
-        return NextResponse.json({ error: "MRP and price must be numbers" }, { status: 400 })
+    const warrantyValue = Number(warrantyMonths)
+    if (!Number.isFinite(priceValue) || priceValue < 0) {
+        return NextResponse.json({ error: "Retailer price must be a valid number" }, { status: 400 })
+    }
+    if (!Number.isInteger(warrantyValue) || warrantyValue < 0 || warrantyValue > 120) {
+        return NextResponse.json({ error: "Warranty must be between 0 and 120 months" }, { status: 400 })
     }
     if (!Array.isArray(images) || images.length === 0) {
         return NextResponse.json({ error: "At least one image is required" }, { status: 400 })
     }
 
-    const store = await prisma.store.findUnique({ where: { id: storeId } })
-    if (!store) return NextResponse.json({ error: "Store not found" }, { status: 400 })
+    const store = await prisma.store.findFirst({
+        where: { status: "approved", isActive: true },
+        orderBy: { createdAt: "asc" },
+        select: { id: true },
+    })
 
     const product = await prisma.product.create({
         data: {
             name,
             description,
-            mrp: mrpValue,
             price: priceValue,
             images,
             category,
+            brand,
+            storageSize,
+            warrantyMonths: warrantyValue,
             inStock: Boolean(inStock),
-            storeId,
+            storeId: store?.id ?? null,
         },
     })
     return NextResponse.json({ product }, { status: 201 })
