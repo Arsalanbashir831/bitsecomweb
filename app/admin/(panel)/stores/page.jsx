@@ -1,5 +1,4 @@
 'use client'
-import { storesDummyData } from "@/assets/assets"
 import StoreInfo from "@/components/admin/StoreInfo"
 import Loading from "@/components/Loading"
 import { useEffect, useState } from "react"
@@ -11,13 +10,21 @@ export default function AdminStores() {
     const [loading, setLoading] = useState(true)
 
     const fetchStores = async () => {
-        setStores(storesDummyData)
+        const response = await fetch('/api/admin/stores')
+        const data = await response.json()
+        if (response.ok) setStores((data.stores ?? []).filter((store) => store.status === 'approved'))
         setLoading(false)
     }
 
     const toggleIsActive = async (storeId) => {
-        // Logic to toggle the status of a store
-
+        const current = stores.find((store) => store.id === storeId)
+        const response = await fetch('/api/admin/stores', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ storeId, isActive: !current?.isActive }),
+        })
+        if (!response.ok) throw new Error('Could not update store')
+        await fetchStores()
     }
 
     useEffect(() => {
@@ -50,7 +57,7 @@ export default function AdminStores() {
                 </div>
             ) : (
                 <div className="flex items-center justify-center h-80">
-                    <h1 className="text-3xl text-slate-400 font-medium">No stores Available</h1>
+                    <h1 className="text-3xl text-slate-400 font-medium">No live stores</h1>
                 </div>
             )
             }

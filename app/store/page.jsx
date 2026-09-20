@@ -1,16 +1,11 @@
 'use client'
-import { dummyStoreDashboardData } from "@/assets/assets"
 import Loading from "@/components/Loading"
 import { CircleDollarSignIcon, ShoppingBasketIcon, StarIcon, TagsIcon } from "lucide-react"
-import Image from "next/image"
-import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export default function Dashboard() {
 
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$'
-
-    const router = useRouter()
 
     const [loading, setLoading] = useState(true)
     const [dashboardData, setDashboardData] = useState({
@@ -28,7 +23,18 @@ export default function Dashboard() {
     ]
 
     const fetchDashboardData = async () => {
-        setDashboardData(dummyStoreDashboardData)
+        const response = await fetch('/api/products')
+        if (response.ok) {
+            const { products = [] } = await response.json()
+            setDashboardData({
+                totalProducts: products.length,
+                totalEarnings: 0,
+                totalOrders: 0,
+                ratings: products.flatMap((product) =>
+                    product.rating.map((rating) => ({ ...rating, product: { id: product.id, name: product.name, category: product.category } }))
+                ),
+            })
+        }
         setLoading(false)
     }
 
@@ -59,34 +65,22 @@ export default function Dashboard() {
             <h2>Total Reviews</h2>
 
             <div className="mt-5">
-                {
-                    dashboardData.ratings.map((review, index) => (
-                        <div key={index} className="flex max-sm:flex-col gap-5 sm:items-center justify-between py-6 border-b border-slate-200 text-sm text-slate-600 max-w-4xl">
+                {dashboardData.ratings.length === 0 ? (
+                    <p className="text-sm text-slate-400">No customer reviews yet.</p>
+                ) : dashboardData.ratings.map((review) => (
+                    <div key={review.id} className="py-6 border-b border-slate-200 text-sm text-slate-600 max-w-4xl">
+                        <div className="flex items-center justify-between gap-4">
                             <div>
-                                <div className="flex gap-3">
-                                    <Image src={review.user.image} alt="" className="w-10 aspect-square rounded-full" width={100} height={100} />
-                                    <div>
-                                        <p className="font-medium">{review.user.name}</p>
-                                        <p className="font-light text-slate-500">{new Date(review.createdAt).toDateString()}</p>
-                                    </div>
-                                </div>
-                                <p className="mt-3 text-slate-500 max-w-xs leading-6">{review.review}</p>
+                                <p className="font-medium text-slate-800">{review.user.name}</p>
+                                <p className="text-slate-400">{review.product.name} · {review.product.category}</p>
                             </div>
-                            <div className="flex flex-col justify-between gap-6 sm:items-end">
-                                <div className="flex flex-col sm:items-end">
-                                    <p className="text-slate-400">{review.product?.category}</p>
-                                    <p className="font-medium">{review.product?.name}</p>
-                                    <div className='flex items-center'>
-                                        {Array(5).fill('').map((_, index) => (
-                                            <StarIcon key={index} size={17} className='text-transparent mt-0.5' fill={review.rating >= index + 1 ? "#00C950" : "#D1D5DB"} />
-                                        ))}
-                                    </div>
-                                </div>
-                                <button onClick={() => router.push(`/product/${review.product.id}`)} className="bg-slate-100 px-5 py-2 hover:bg-slate-200 rounded transition-all">View Product</button>
+                            <div className="flex" aria-label={`${review.rating} out of 5 stars`}>
+                                {Array(5).fill('').map((_, index) => <StarIcon key={index} size={17} className="text-transparent" fill={review.rating >= index + 1 ? "#00C950" : "#D1D5DB"} />)}
                             </div>
                         </div>
-                    ))
-                }
+                        <p className="mt-3 leading-6">{review.review}</p>
+                    </div>
+                ))}
             </div>
         </div>
     )

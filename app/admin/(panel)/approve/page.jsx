@@ -1,5 +1,4 @@
 'use client'
-import { storesDummyData } from "@/assets/assets"
 import StoreInfo from "@/components/admin/StoreInfo"
 import Loading from "@/components/Loading"
 import { useEffect, useState } from "react"
@@ -12,13 +11,20 @@ export default function AdminApprove() {
 
 
     const fetchStores = async () => {
-        setStores(storesDummyData)
+        const response = await fetch('/api/admin/stores')
+        const data = await response.json()
+        if (response.ok) setStores((data.stores ?? []).filter((store) => store.status === 'pending'))
         setLoading(false)
     }
 
     const handleApprove = async ({ storeId, status }) => {
-        // Logic to approve a store
-
+        const response = await fetch('/api/admin/stores', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ storeId, status, isActive: status === 'approved' }),
+        })
+        if (!response.ok) throw new Error('Could not update store')
+        await fetchStores()
 
     }
 

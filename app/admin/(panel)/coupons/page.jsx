@@ -3,7 +3,6 @@ import { useEffect, useState } from "react"
 import { format } from "date-fns"
 import toast from "react-hot-toast"
 import { DeleteIcon } from "lucide-react"
-import { couponDummyData } from "@/assets/assets"
 
 export default function AdminCoupons() {
 
@@ -20,14 +19,22 @@ export default function AdminCoupons() {
     })
 
     const fetchCoupons = async () => {
-        setCoupons(couponDummyData)
+        const response = await fetch('/api/admin/coupons')
+        const data = await response.json()
+        if (response.ok) setCoupons(data.coupons ?? [])
     }
 
     const handleAddCoupon = async (e) => {
         e.preventDefault()
-        // Logic to add a coupon
-
-
+        const response = await fetch('/api/admin/coupons', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newCoupon),
+        })
+        const data = await response.json()
+        if (!response.ok) throw new Error(data.error || 'Could not add coupon')
+        setNewCoupon({ code: '', description: '', discount: '', forNewUser: false, forMember: false, isPublic: false, expiresAt: new Date() })
+        await fetchCoupons()
     }
 
     const handleChange = (e) => {
@@ -35,9 +42,9 @@ export default function AdminCoupons() {
     }
 
     const deleteCoupon = async (code) => {
-        // Logic to delete a coupon
-
-
+        const response = await fetch(`/api/admin/coupons/${encodeURIComponent(code)}`, { method: 'DELETE' })
+        if (!response.ok) throw new Error('Could not delete coupon')
+        await fetchCoupons()
     }
 
     useEffect(() => {
@@ -65,7 +72,7 @@ export default function AdminCoupons() {
                 <label>
                     <p className="mt-3">Coupon Expiry Date</p>
                     <input type="date" placeholder="Coupon Expires At" className="w-full mt-1 p-2 border border-slate-200 outline-slate-400 rounded-md"
-                        name="expiresAt" value={format(newCoupon.expiresAt, 'yyyy-MM-dd')} onChange={handleChange}
+                        name="expiresAt" value={newCoupon.expiresAt instanceof Date ? format(newCoupon.expiresAt, 'yyyy-MM-dd') : newCoupon.expiresAt} onChange={handleChange}
                     />
                 </label>
 
@@ -113,7 +120,9 @@ export default function AdminCoupons() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-200">
-                            {coupons.map((coupon) => (
+                            {coupons.length === 0 ? (
+                                <tr><td colSpan={7} className="py-10 px-4 text-center text-slate-400">No coupons yet.</td></tr>
+                            ) : coupons.map((coupon) => (
                                 <tr key={coupon.code} className="hover:bg-slate-50">
                                     <td className="py-3 px-4 font-medium text-slate-800">{coupon.code}</td>
                                     <td className="py-3 px-4 text-slate-800">{coupon.description}</td>
