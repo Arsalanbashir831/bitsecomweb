@@ -1,5 +1,5 @@
 'use client'
-import BestSelling from "@/components/BestSelling";
+// import BestSelling from "@/components/BestSelling";
 import Hero from "@/components/Hero";
 import Newsletter from "@/components/Newsletter";
 import OurSpecs from "@/components/OurSpec";
@@ -10,7 +10,7 @@ export default function Home() {
         <div>
             <Hero />
             <LatestProducts />
-            <BestSelling />
+            {/* <BestSelling /> */}
             <OurSpecs />
             <Newsletter />
         </div>

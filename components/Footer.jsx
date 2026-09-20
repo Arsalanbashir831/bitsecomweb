@@ -17,9 +17,9 @@ const Footer = () => {
             title: "QUICK LINKS",
             links: [
                 { text: "Home", path: '/', icon: null },
-                { text: "Privacy Policy", path: '/', icon: null },
-                { text: "Become Plus Member", path: '/pricing', icon: null },
-                { text: "Create Your Store", path: '/create-store', icon: null },
+                { text: "Store", path: '/store', icon: null },
+                { text: "Data Recovery Service", path: 'https://diskanalyst.com.pk', icon: null },
+
             ]
         },
         {
