@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { isProductBrand, isProductCategory, isStorageSize } from "@/lib/product-options"
+import { createUniqueProductSlug } from "@/lib/product-slug"
 
 export async function GET() {
     const products = await prisma.product.findMany({
@@ -35,8 +36,11 @@ export async function POST(request) {
         select: { id: true },
     })
 
+    const slug = await createUniqueProductSlug(prisma, name)
+
     const product = await prisma.product.create({
         data: {
+            slug,
             name,
             description,
             price: priceValue,

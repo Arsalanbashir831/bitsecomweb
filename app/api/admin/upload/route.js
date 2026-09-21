@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server"
-import { mkdir, writeFile } from "fs/promises"
+import { writeFile } from "fs/promises"
 import path from "path"
 import { randomUUID } from "crypto"
 import { put } from "@vercel/blob"
-import { MAX_UPLOAD_BYTES, UPLOAD_DIR, UPLOAD_EXTENSIONS } from "@/lib/uploads"
+import { ensureProductImageDirectory, MAX_UPLOAD_BYTES, UPLOAD_EXTENSIONS } from "@/lib/uploads"
+import { slugifyProductName } from "@/lib/product-slug"
 
 export async function POST(request) {
     const formData = await request.formData().catch(() => null)
@@ -12,7 +13,9 @@ export async function POST(request) {
     const files = formData.getAll("files").filter((entry) => entry instanceof File)
     if (files.length === 0) return NextResponse.json({ error: "No files provided" }, { status: 400 })
 
-    const urls = []
+    const productName = String(formData.get("productName") ?? '').trim()
+    if (!productName) return NextResponse.json({ error: "Enter a product name before uploading images" }, { status: 400 })
+
     for (const file of files) {
         const extension = UPLOAD_EXTENSIONS[file.type]
         if (!extension) {
@@ -21,14 +24,30 @@ export async function POST(request) {
         if (file.size > MAX_UPLOAD_BYTES) {
             return NextResponse.json({ error: `${file.name} is larger than 8MB` }, { status: 413 })
         }
+    }
+
+    const urls = []
+    const productFolder = slugifyProductName(productName)
+    const useBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN)
+
+    if (process.env.VERCEL && !useBlob) {
+        return NextResponse.json({ error: "Vercel Blob is not connected to this deployment" }, { status: 503 })
+    }
+
+    const directory = useBlob ? null : await ensureProductImageDirectory(productFolder)
+
+    for (const file of files) {
+        const extension = UPLOAD_EXTENSIONS[file.type]
         const name = `${Date.now()}-${randomUUID()}${extension}`
-        if (process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID) {
-            const blob = await put(`products/${name}`, file, { access: "public", addRandomSuffix: false })
+        if (useBlob) {
+            const blob = await put(`assets/products-listing/${productFolder}/${name}`, file, {
+                access: 'public',
+                addRandomSuffix: false,
+            })
             urls.push(blob.url)
         } else {
-            await mkdir(UPLOAD_DIR, { recursive: true })
-            await writeFile(path.join(UPLOAD_DIR, name), Buffer.from(await file.arrayBuffer()))
-            urls.push(`/uploads/${name}`)
+            await writeFile(path.join(directory.absolutePath, name), Buffer.from(await file.arrayBuffer()), { flag: 'wx' })
+            urls.push(`${directory.publicPrefix}${name}`)
         }
     }
 

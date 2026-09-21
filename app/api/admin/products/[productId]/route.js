@@ -43,9 +43,19 @@ export async function PATCH(request, { params }) {
     if (data.price !== undefined && (!Number.isFinite(data.price) || data.price < 0)) {
         return NextResponse.json({ error: "Retailer price must be a valid number" }, { status: 400 })
     }
+    if (data.images !== undefined && (!Array.isArray(data.images) || data.images.length === 0)) {
+        return NextResponse.json({ error: "At least one image is required" }, { status: 400 })
+    }
 
     try {
+        const existing = await prisma.product.findUnique({ where: { id: productId }, select: { images: true } })
+        if (!existing) return NextResponse.json({ error: "Product not found" }, { status: 404 })
+
         const product = await prisma.product.update({ where: { id: productId }, data })
+        if (data.images !== undefined) {
+            const retainedImages = new Set(data.images)
+            await Promise.all(existing.images.filter((url) => !retainedImages.has(url)).map((url) => deleteUpload(url)))
+        }
         return NextResponse.json({ product })
     } catch {
         return NextResponse.json({ error: "Product not found" }, { status: 404 })

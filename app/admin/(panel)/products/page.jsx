@@ -8,6 +8,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import toast from "react-hot-toast"
 
 const emptyForm = {
+    slug: '',
     name: '',
     description: '',
     category: 'HDD',
@@ -49,6 +50,7 @@ export default function AdminProducts() {
 
     const openEdit = (product) => {
         setForm({
+            slug: product.slug,
             name: product.name,
             description: product.description,
             category: product.category,
@@ -69,6 +71,7 @@ export default function AdminProducts() {
         if (files.length === 0) return
 
         const formData = new FormData()
+        formData.append('productName', form.slug || form.name)
         files.forEach((file) => formData.append('files', file))
 
         setUploading(true)

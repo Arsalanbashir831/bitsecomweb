@@ -14,7 +14,7 @@ const ProductCard = ({ product }) => {
         : 0;
 
     return (
-        <Link href={`/product/${product.id}`} className='group block focus-visible:rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-green-600'>
+        <Link href={`/product/${product.slug}`} className='group block focus-visible:rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-green-600'>
             <div className='flex aspect-square items-center justify-center overflow-hidden rounded-xl border border-transparent bg-slate-100 transition-colors duration-300 group-hover:border-slate-200'>
                 <Image width={500} height={500} className='max-h-[62%] w-auto max-w-[78%] object-contain transition-transform duration-500 ease-out group-hover:scale-110' src={product.images[0]} alt={`${product.name} — ${product.brand} ${product.storageSize} ${product.category}`} />
             </div>

@@ -4,30 +4,39 @@ import { prisma } from "@/lib/prisma"
 import { SITE, SITE_URL } from "@/lib/site"
 import StructuredData from "@/components/StructuredData"
 import Link from "next/link"
-import { notFound } from "next/navigation"
+import { notFound, permanentRedirect } from "next/navigation"
 import { cache } from "react"
 
-const getProduct = cache(async (productId) => {
+const productInclude = {
+    store: { select: { name: true, username: true, logo: true } },
+    rating: {
+        include: { user: { select: { name: true, image: true } } },
+        orderBy: { createdAt: "desc" },
+    },
+}
+
+const getProduct = cache(async (identifier) => {
+    const product = await prisma.product.findUnique({
+        where: { slug: identifier },
+        include: productInclude,
+    })
+
+    if (product) return product
+
     return prisma.product.findUnique({
-        where: { id: productId },
-        include: {
-            store: { select: { name: true, username: true, logo: true } },
-            rating: {
-                include: { user: { select: { name: true, image: true } } },
-                orderBy: { createdAt: "desc" },
-            },
-        },
+        where: { id: identifier },
+        include: productInclude,
     })
 })
 
 export async function generateMetadata({ params }) {
-    const { productId } = await params
-    const product = await getProduct(productId)
+    const { slug } = await params
+    const product = await getProduct(slug)
     if (!product) return { title: "Product not found" }
 
     const title = `${product.name} | ${product.brand} ${product.storageSize} ${product.category}`
     const description = `${product.brand} ${product.storageSize} ${product.category} with a ${product.warrantyMonths}-month warranty. ${product.description}`.slice(0, 160)
-    const canonical = `${SITE_URL}/product/${product.id}`
+    const canonical = `${SITE_URL}/product/${product.slug}`
 
     return {
         title,
@@ -45,14 +54,15 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function ProductPage({ params }) {
-    const { productId } = await params
-    const product = await getProduct(productId)
+    const { slug } = await params
+    const product = await getProduct(slug)
     if (!product) notFound()
+    if (slug !== product.slug) permanentRedirect(`/product/${product.slug}`)
 
     const averageRating = product.rating.length
         ? product.rating.reduce((total, review) => total + review.rating, 0) / product.rating.length
         : null
-    const productUrl = `${SITE_URL}/product/${product.id}`
+    const productUrl = `${SITE_URL}/product/${product.slug}`
     const structuredData = {
         "@context": "https://schema.org",
         "@type": "Product",

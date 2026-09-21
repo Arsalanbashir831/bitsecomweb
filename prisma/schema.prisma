@@ -25,6 +25,7 @@ model User {
 // HDD and SSD inventory managed from the admin panel.
 model Product {
     id             String   @id @default(cuid())
+    slug           String   @unique
     name           String
     description    String
     price          Float

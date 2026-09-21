@@ -12,14 +12,14 @@ export default async function sitemap() {
 
     try {
         const products = await prisma.product.findMany({
-            select: { id: true, updatedAt: true, images: true },
+            select: { slug: true, updatedAt: true, images: true },
             orderBy: { updatedAt: "desc" },
         })
 
         return [
             ...staticPages,
             ...products.map((product) => ({
-                url: absoluteUrl(`/product/${product.id}`),
+                url: absoluteUrl(`/product/${product.slug}`),
                 lastModified: product.updatedAt,
                 changeFrequency: "weekly",
                 priority: 0.8,
