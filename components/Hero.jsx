@@ -17,11 +17,11 @@ const Hero = () => {
                             Storage infrastructure / Pakistan
                         </p>
                         <h1 className='mt-6 max-w-3xl text-4xl font-semibold leading-[1.02] tracking-[-0.04em] sm:text-6xl xl:text-7xl'>
-                            <span className='block overflow-hidden'><span className='block' data-hero-line>Storage built</span></span>
-                            <span className='block overflow-hidden'><span className='block text-slate-400' data-hero-line>to stay online.</span></span>
+                            <span className='block overflow-hidden'><span className='block' data-hero-line>Best HDD Wholesale Dealer</span></span>
+                            <span className='block overflow-hidden'><span className='block text-slate-400' data-hero-line>in Pakistan</span></span>
                         </h1>
                         <p className='mt-6 max-w-xl text-base leading-7 text-slate-300 sm:text-lg' data-hero-copy>
-                            Dependable HDDs and SSDs for CCTV, DVR, NVR, desktop, and laptop systems—with verified health and up to two years replacement warranty.
+                            Dependable HDDs and SSDs for CCTV, DVR, NVR, desktop, and laptop systems—with verified health and up to 1-2 years replacement warranty.
                         </p>
                         <div className='mt-9 flex flex-wrap items-center gap-4'>
                             <Link href='/shop' className='group inline-flex min-h-12 items-center gap-3 rounded-md bg-green-400 px-6 text-sm font-semibold text-slate-950 transition hover:bg-green-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-green-400' data-hero-action>
@@ -33,7 +33,7 @@ const Hero = () => {
                         </div>
                         <div className='mt-10 flex flex-wrap gap-x-7 gap-y-3 border-t border-slate-800 pt-6 text-xs text-slate-400' data-hero-copy>
                             <span className='flex items-center gap-2'><CheckCircle2 className='text-green-400' size={15} /> Health checked</span>
-                            <span className='flex items-center gap-2'><CheckCircle2 className='text-green-400' size={15} /> Nationwide supply</span>
+                            <span className='flex items-center gap-2'><CheckCircle2 className='text-green-400' size={15} /> Supply All Over Pakistan</span>
                             <span className='flex items-center gap-2'><CheckCircle2 className='text-green-400' size={15} /> Wholesale available</span>
                         </div>
                     </div>
