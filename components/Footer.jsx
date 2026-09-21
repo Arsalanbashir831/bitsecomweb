@@ -19,6 +19,8 @@ const Footer = () => {
                 { text: "Home", path: '/', icon: null },
                 { text: "Shop", path: '/shop', icon: null },
                 { text: "Storage Guide", path: '/storage-guide', icon: null },
+                { text: "Warranty Policy", path: '/warranty-policy', icon: null },
+                { text: "Contact Us", path: '/contact-us', icon: null },
                 { text: "Data Recovery Service", path: 'https://diskanalyst.com.pk/', external: true, icon: null },
 
             ]

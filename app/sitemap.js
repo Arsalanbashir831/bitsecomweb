@@ -6,6 +6,8 @@ export default async function sitemap() {
         { url: absoluteUrl("/"), changeFrequency: "weekly", priority: 1 },
         { url: absoluteUrl("/shop"), changeFrequency: "daily", priority: 0.9 },
         { url: absoluteUrl("/storage-guide"), changeFrequency: "monthly", priority: 0.8 },
+        { url: absoluteUrl("/warranty-policy"), changeFrequency: "yearly", priority: 0.7 },
+        { url: absoluteUrl("/contact-us"), changeFrequency: "yearly", priority: 0.7 },
     ]
 
     try {

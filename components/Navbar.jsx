@@ -32,6 +32,8 @@ const Navbar = () => {
                     <div className="hidden sm:flex items-center gap-4 lg:gap-8 text-slate-600">
                         <Link href="/">Home</Link>
                         <Link href="/shop">Shop</Link>
+                        <Link href="/warranty-policy">Warranty Policy</Link>
+                        <Link href="/contact-us">Contact</Link>
                         <a href="https://diskanalyst.com.pk/" rel="noopener noreferrer">Data Recovery Service</a>
 
                         <form onSubmit={handleSearch} className="hidden xl:flex items-center w-xs text-sm gap-2 bg-slate-100 px-4 py-3 rounded-full">
